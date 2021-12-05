@@ -1,0 +1,29 @@
+{
+  "name": "fostam/file",
+  "type": "library",
+  "description": "Convenience wrapper for PHP functions like `fopen()`, `fgets()` that offers object oriented usage and handles errors with exceptions instead of return results.",
+  "license": "Apache-2.0",
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  },
+  "authors": [
+    {
+      "name": "Stefan Stammler",
+      "email": "stefan@fostam.org"
+    }
+  ],
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "Fostam\\File\\": "src/File"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Fostam\\File\\Tests\\": "tests"
+    }
+  }
+}

@@ -21,9 +21,6 @@ class File {
     /** @var resource */
     private $fh;
 
-    /**
-     * @throws Exception
-     */
     public function __construct(string $filename, string $mode) {
         $this->filename = $filename;
         $this->mode = $mode;
@@ -86,7 +83,7 @@ class File {
     /**
      * @throws Exception
      */
-    public function getLine(?int $maxBytes = null, int $pos = null): ?string {
+    public function readLine(?int $maxBytes = null, int $pos = null): ?string {
         $this->open();
         $this->seek($pos);
 
@@ -112,7 +109,7 @@ class File {
     /**
      * @throws Exception
      */
-    public function getBytes(int $length, int $pos = null): ?string {
+    public function readBytes(int $length, int $pos = null): ?string {
         $this->open();
         $this->seek($pos);
 

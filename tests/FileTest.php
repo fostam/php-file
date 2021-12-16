@@ -25,19 +25,19 @@ final class FileTest extends TestCase {
     public function testReadLines(): void {
         $file = new File($this->testFileName, File::MODE_READ);
 
-        $line = $file->getLine();
+        $line = $file->readLine();
         $this->assertEquals("a1234567890\n", $line);
 
-        $line = $file->getLine();
+        $line = $file->readLine();
         $this->assertEquals("b12345678901234567890\n", $line);
 
-        $line = $file->getLine();
+        $line = $file->readLine();
         $this->assertEquals("c1234567890\n", $line);
 
-        $line = $file->getLine();
+        $line = $file->readLine();
         $this->assertEquals("d12345678901234567890\n", $line);
 
-        $line = $file->getLine();
+        $line = $file->readLine();
         $this->assertEquals(null, $line);
 
         $file->close();
@@ -49,28 +49,28 @@ final class FileTest extends TestCase {
     public function testReadLinesWithPosition(): void {
         $file = new File($this->testFileName, File::MODE_READ);
 
-        $line = $file->getLine(null, 0);
+        $line = $file->readLine(null, 0);
         $this->assertEquals("a1234567890\n", $line);
         $this->assertEquals(12, $file->getPos());
 
-        $line = $file->getLine(null, 0);
+        $line = $file->readLine(null, 0);
         $this->assertEquals("a1234567890\n", $line);
         $this->assertEquals(12, $file->getPos());
 
-        $line = $file->getLine(null, 34);
+        $line = $file->readLine(null, 34);
         $this->assertEquals("c1234567890\n", $line);
         $this->assertEquals(46, $file->getPos());
 
-        $line = $file->getLine(null, 67);
+        $line = $file->readLine(null, 67);
         $this->assertEquals("\n", $line);
         $this->assertEquals(strlen($this->testFileContents), $file->getPos());
 
-        $line = $file->getLine(null, 999);
+        $line = $file->readLine(null, 999);
         $this->assertEquals(null, $line);
         $this->assertEquals(999, $file->getPos());
 
         $this->expectException(Exception::class);
-        $file->getLine(null, -1);
+        $file->readLine(null, -1);
 
         $file->close();
     }
@@ -81,17 +81,17 @@ final class FileTest extends TestCase {
     public function testReadLinesWithLimit(): void {
         $file = new File($this->testFileName, File::MODE_READ);
 
-        $line = $file->getLine(4);
+        $line = $file->readLine(4);
         $this->assertEquals("a123", $line);
 
-        $line = $file->getLine(6);
+        $line = $file->readLine(6);
         $this->assertEquals("456789", $line);
 
-        $line = $file->getLine(999);
+        $line = $file->readLine(999);
         $this->assertEquals("0\n", $line);
 
         $pos = 0;
-        $line = $file->getLine(999, $pos);
+        $line = $file->readLine(999, $pos);
         $this->assertEquals("a1234567890\n", $line);
 
         $file->close();
@@ -103,16 +103,16 @@ final class FileTest extends TestCase {
     public function testReadBytes(): void {
         $file = new File($this->testFileName, File::MODE_READ);
 
-        $data = $file->getBytes(11);
+        $data = $file->readBytes(11);
         $this->assertEquals("a1234567890", $data);
 
-        $data = $file->getBytes(11);
+        $data = $file->readBytes(11);
         $this->assertEquals("\nb123456789", $data);
 
-        $data = $file->getBytes(999);
+        $data = $file->readBytes(999);
         $this->assertEquals("01234567890\nc1234567890\nd12345678901234567890\n", $data);
 
-        $data = $file->getBytes(1);
+        $data = $file->readBytes(1);
         $this->assertEquals(null, $data);
 
         $file->close();
@@ -124,24 +124,24 @@ final class FileTest extends TestCase {
     public function testReadBytesWithPosition(): void {
         $file = new File($this->testFileName, File::MODE_READ);
 
-        $data = $file->getBytes(strlen($this->testFileContents), 0);
+        $data = $file->readBytes(strlen($this->testFileContents), 0);
         $this->assertEquals($this->testFileContents, $data);
         $this->assertEquals(strlen($this->testFileContents), $file->getPos());
 
-        $data = $file->getBytes(11, 33);
+        $data = $file->readBytes(11, 33);
         $this->assertEquals("\nc123456789", $data);
         $this->assertEquals(44, $file->getPos());
 
-        $data = $file->getBytes(999, $file->getPos());
+        $data = $file->readBytes(999, $file->getPos());
         $this->assertEquals("0\nd12345678901234567890\n", $data);
         $this->assertEquals(strlen($this->testFileContents), $file->getPos());
 
-        $data = $file->getBytes(1);
+        $data = $file->readBytes(1);
         $this->assertEquals(null, $data);
         $this->assertEquals(strlen($this->testFileContents), $file->getPos());
 
         $this->expectException(Exception::class);
-        $file->getBytes(999, -1);
+        $file->readBytes(999, -1);
 
         $file->close();
     }
@@ -151,9 +151,9 @@ final class FileTest extends TestCase {
 
         $testStr = 'ABCDEFGHIJ';
         $file->write($testStr);
-        $data = $file->getBytes(5);
+        $data = $file->readBytes(5);
         $this->assertEquals("0\nb12", $data);
-        $data = $file->getBytes(15, 0);
+        $data = $file->readBytes(15, 0);
         $this->assertEquals("ABCDEFGHIJ0\nb12", $data);
 
         $file->close();
@@ -163,11 +163,11 @@ final class FileTest extends TestCase {
         $file = new File($this->testFileName, File::MODE_READWRITE);
 
         $file->truncate(15);
-        $data = $file->getBytes(999);
+        $data = $file->readBytes(999);
         $this->assertEquals("a1234567890\nb12", $data);
 
         $file->truncate();
-        $data = $file->getBytes(999);
+        $data = $file->readBytes(999);
         $this->assertEquals("", $data);
 
         $this->expectException(Exception::class);

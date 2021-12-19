@@ -3,8 +3,11 @@
 namespace Fostam\File\Tests;
 
 use Exception;
-use Fostam\File\File;
+use Fostam\File\Exception\OpenFileErrorFileException;
 use PHPUnit\Framework\TestCase;
+use Fostam\File\File;
+use Fostam\File\Exception\SetPositionErrorFileException;
+
 
 final class FileTest extends TestCase {
     private string $testFileName;
@@ -17,6 +20,13 @@ final class FileTest extends TestCase {
 
     protected function tearDown(): void {
         unlink($this->testFileName);
+    }
+
+    public function testOpenFile(): void {
+        $file = new File($this->testFileName . strval(time()), File::MODE_READ);
+
+        $this->expectException(OpenFileErrorFileException::class);
+        $file->open();
     }
 
     /**
@@ -69,7 +79,7 @@ final class FileTest extends TestCase {
         $this->assertEquals(null, $line);
         $this->assertEquals(999, $file->getPos());
 
-        $this->expectException(Exception::class);
+        $this->expectException(SetPositionErrorFileException::class);
         $file->readLine(null, -1);
 
         $file->close();
@@ -140,7 +150,7 @@ final class FileTest extends TestCase {
         $this->assertEquals(null, $data);
         $this->assertEquals(strlen($this->testFileContents), $file->getPos());
 
-        $this->expectException(Exception::class);
+        $this->expectException(SetPositionErrorFileException::class);
         $file->readBytes(999, -1);
 
         $file->close();
@@ -187,7 +197,7 @@ final class FileTest extends TestCase {
         $file->setPos(999);
         $this->assertEquals(999, $file->getPos());
 
-        $this->expectException(Exception::class);
+        $this->expectException(SetPositionErrorFileException::class);
         $file->setPos(-1);
 
         $file->close();
@@ -196,8 +206,9 @@ final class FileTest extends TestCase {
     public function testLock(): void {
         $file = new File($this->testFileName, File::MODE_READWRITE);
 
-        $file->lock(LOCK_EX);
-        $file->lock(LOCK_UN);
+        $file->lockExclusive();
+        $file->lockShared();
+        $file->unlock();
 
         $file->close();
 

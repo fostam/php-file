@@ -44,7 +44,7 @@ class File {
      * @throws CloseFileErrorFileException
      */
     public function __destruct() {
-        $this->close();
+        $this->close(true);
     }
 
     /**
@@ -72,9 +72,18 @@ class File {
     /**
      * @throws CloseFileErrorFileException
      */
-    public function close() {
+    public function close(bool $silent = false) {
         if (is_null($this->fh)) {
             return;
+        }
+
+        if (!is_resource($this->fh)) {
+            if ($silent) {
+                return;
+            }
+            else {
+                throw new CloseFileErrorFileException($this->filename, 'not a valid resource');
+            }
         }
 
         error_clear_last();

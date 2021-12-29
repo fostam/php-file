@@ -117,6 +117,7 @@ class File {
      * @throws SetPositionErrorFileException
      * @throws GetPositionErrorFileException
      * @throws ReadErrorFileException
+     * @throws FileException
      */
     public function readLine(?int $maxBytes = null, int $pos = null): ?string {
         $this->open();
@@ -137,7 +138,7 @@ class File {
         }
 
         if ($line === false) {
-            if (feof($this->fh)) {
+            if ($this->isAtEOF()) {
                 return null;
             }
             else {
@@ -153,6 +154,7 @@ class File {
      * @throws SetPositionErrorFileException
      * @throws GetPositionErrorFileException
      * @throws ReadErrorFileException
+     * @throws FileException
      */
     public function readBytes(int $length, int $pos = null): ?string {
         $this->open();
@@ -302,6 +304,25 @@ class File {
         if ($result === false) {
             throw new FileException($this->filename, "couldn't stat file '{$this->filename}'", $this->getLastErrorMessage());
         }
+        return $result;
+    }
+
+    /**
+     * @return bool
+     * @throws FileException
+     */
+    public function isAtEOF(): bool {
+        try {
+            $result = @feof($this->fh);
+        }
+        catch (Exception $e) {
+            throw new FileException($this->filename, '', $this->getLastErrorMessage(), $e);
+        }
+
+        if ($result === null) {
+            throw new FileException($this->filename, '', $this->getLastErrorMessage());
+        }
+
         return $result;
     }
 

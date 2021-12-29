@@ -48,7 +48,7 @@ derive from the `Fostam\File\Exception\FileException` class.
 ```
 __construct(string $filename, string $mode)
 open()
-close()
+close(bool $silent = false)
 setPos(int $pos)
 getPos(): int
 readLine(?int $maxBytes = null, int $pos = null): ?string
@@ -60,6 +60,7 @@ lockShared(bool $nonBlocking = false)
 lockExclusive(bool $nonBlocking = false)
 unlock(bool $nonBlocking = false)
 stat()
+isAtEOF(): bool
 getFileHandle(): resource
 ```
 

@@ -170,7 +170,7 @@ class File {
         }
 
         if ($data === false) {
-            if (feof($this->fh)) {
+            if ($this->isAtEOF()) {
                 return null;
             }
             else {

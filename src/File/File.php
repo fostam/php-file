@@ -50,7 +50,7 @@ class File {
     /**
      * @throws OpenFileErrorFileException
      */
-    public function open() {
+    public function open(): void {
         if ($this->fh) {
             return;
         }
@@ -72,7 +72,7 @@ class File {
     /**
      * @throws CloseFileErrorFileException
      */
-    public function close(bool $silent = false) {
+    public function close(bool $silent = false): void {
         if (is_null($this->fh)) {
             return;
         }
@@ -275,7 +275,7 @@ class File {
      * @throws FileException
      * @throws OpenFileErrorFileException
      */
-    public function lockShared(bool $nonBlocking = false) {
+    public function lockShared(bool $nonBlocking = false): void {
         $this->lock(LOCK_SH, $nonBlocking);
     }
 
@@ -283,7 +283,7 @@ class File {
      * @throws FileException
      * @throws OpenFileErrorFileException
      */
-    public function lockExclusive(bool $nonBlocking = false) {
+    public function lockExclusive(bool $nonBlocking = false): void {
         $this->lock(LOCK_EX, $nonBlocking);
     }
 
@@ -291,7 +291,7 @@ class File {
      * @throws FileException
      * @throws OpenFileErrorFileException
      */
-    public function unlock(bool $nonBlocking = false) {
+    public function unlock(bool $nonBlocking = false): void {
         $this->lock(LOCK_UN, $nonBlocking);
     }
 
@@ -346,7 +346,7 @@ class File {
      * @throws OpenFileErrorFileException
      * @throws FileException
      */
-    private function lock(int $operation, bool $nonBlocking = false) {
+    private function lock(int $operation, bool $nonBlocking = false): void {
         if ($nonBlocking) {
             $operation |= LOCK_NB;
         }
